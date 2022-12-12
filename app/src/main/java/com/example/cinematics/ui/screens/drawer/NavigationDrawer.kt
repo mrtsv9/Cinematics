@@ -10,8 +10,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.cinematics.R
 import com.example.cinematics.navigation.DrawerNavItems
@@ -34,10 +37,9 @@ fun DrawerCopy(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_camera),
-                contentDescription = null
-            )
+            Text(text = stringResource(id = R.string.app_name),
+                fontSize = 60.sp,
+                color = Color.White)
         }
         LazyColumn(
             modifier = Modifier.padding(horizontal = 20.dp)

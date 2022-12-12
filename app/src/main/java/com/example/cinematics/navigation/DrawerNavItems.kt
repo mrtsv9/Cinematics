@@ -14,13 +14,5 @@ val DrawerNavItems = listOf(
         label = DrawerItem.Preferences.title,
         icon = Icons.Filled.Assistant,
         route = DrawerItem.Preferences.route
-    ),NavItem(
-        label = DrawerItem.Settings.title,
-        icon = Icons.Filled.Settings,
-        route = DrawerItem.Settings.route
-    ),NavItem(
-        label = DrawerItem.Help.title,
-        icon = Icons.Filled.Help,
-        route = DrawerItem.Help.route
-    ),
+    )
 )
