@@ -39,5 +39,6 @@ fun MovieDetail.toMovieDetailEntity(): MovieDetailEntity {
         video,
         vote_average,
         overview,
-        poster_path)
+        poster_path,
+        userToken = "")
 }

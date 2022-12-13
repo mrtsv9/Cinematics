@@ -12,6 +12,7 @@ import retrofit2.Converter
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -25,6 +26,7 @@ object NetworkModule {
     fun provideBaseURL(): String {
         return ApiURL.BASE_URL
     }
+
     /**
      * Provides LoggingInterceptor for api information
      */
@@ -73,9 +75,7 @@ object NetworkModule {
             .addConverterFactory(converterFactory)
             .build()
     }
-    /**
-     * Provides Api Service using retrofit
-     */
+
     @Singleton
     @Provides
     fun provideRestApiService(retrofit: Retrofit): ApiService {

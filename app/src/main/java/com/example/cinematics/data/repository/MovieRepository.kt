@@ -5,6 +5,7 @@ import androidx.paging.PagingConfig
 import com.example.cinematics.data.datasource.remote.paging.*
 import com.example.cinematics.data.datasource.remote.ApiService
 import com.example.cinematics.data.local.dao.MovieDetailDao
+import com.example.cinematics.data.local.dao.UserDao
 import com.example.cinematics.data.local.entities.MovieDetailEntity
 import com.example.cinematics.data.model.BaseModel
 import com.example.cinematics.data.model.Genres
@@ -20,35 +21,45 @@ import javax.inject.Inject
 class MovieRepository @Inject constructor(
     private val apiService: ApiService,
     private val dao: MovieDetailDao,
+    private val userDao: UserDao,
 ) {
 
     suspend fun insertMovie(movie: MovieDetail) {
-        dao.save(movie.toMovieDetailEntity())
+        val token = userDao.getUser()!!.token!!
+        val movieDetail = movie.toMovieDetailEntity()
+        movieDetail.userToken = token
+        dao.save(movieDetail)
     }
 
     suspend fun updateUserRating(userRating: Int, title: String) {
-        dao.updateUserRating(userRating, title)
+        val token = userDao.getUser()!!.token!!
+        dao.updateUserRating(userRating, title, token)
     }
 
     suspend fun isPresentByTitle(title: String): Boolean {
-        val result = dao.isPresentByTitle(title)
+        val token = userDao.getUser()!!.token!!
+        val result = dao.isPresentByTitle(title, token)
         return result != null
     }
 
     suspend fun getAllSavedMovies(): List<MovieDetailEntity> {
-        return dao.getAll()
+        val token = userDao.getUser()!!.token!!
+        return dao.getAll(token)
     }
 
     suspend fun deleteItemFromDatabase(item: MovieDetail) {
-        dao.deleteItem(item.title)
+        val token = userDao.getUser()!!.token!!
+        dao.deleteItem(item.title, token)
     }
 
     suspend fun deleteItemFromDatabase(item: MovieDetailEntity) {
-        dao.deleteItem(item.title)
+        val token = userDao.getUser()!!.token!!
+        dao.deleteItem(item.title, token)
     }
 
     suspend fun getUserRating(title: String): Int? {
-        return dao.getUserRating(title)
+        val token = userDao.getUser()!!.token!!
+        return dao.getUserRating(title, token)
     }
 
     suspend fun movieList(page: Int): Flow<DataState<BaseModel>> = flow {

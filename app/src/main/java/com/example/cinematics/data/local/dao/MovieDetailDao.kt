@@ -14,18 +14,18 @@ interface MovieDetailDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun save(movie: MovieDetailEntity)
 
-    @Query("select * from movie_detail")
-    suspend fun getAll(): List<MovieDetailEntity>
+    @Query("select * from movie_detail where userToken = :token")
+    suspend fun getAll(token: String): List<MovieDetailEntity>
 
-    @Query("select * from movie_detail where title = :title")
-    suspend fun isPresentByTitle(title: String): MovieDetailEntity?
+    @Query("select * from movie_detail where title = :title and userToken = :token")
+    suspend fun isPresentByTitle(title: String, token: String): MovieDetailEntity?
 
-    @Query("update movie_detail set userRating = :userRating where title = :title")
-    suspend fun updateUserRating(userRating: Int, title: String)
+    @Query("update movie_detail set userRating = :userRating where title = :title and userToken = :token")
+    suspend fun updateUserRating(userRating: Int, title: String, token: String)
 
-    @Query("delete from movie_detail where title = :title")
-    suspend fun deleteItem(title: String)
+    @Query("delete from movie_detail where title = :title and userToken = :token")
+    suspend fun deleteItem(title: String, token: String)
 
-    @Query("select userRating from movie_detail where title = :title")
-    suspend fun getUserRating(title: String): Int
+    @Query("select userRating from movie_detail where title = :title and userToken = :token")
+    suspend fun getUserRating(title: String, token: String): Int
 }

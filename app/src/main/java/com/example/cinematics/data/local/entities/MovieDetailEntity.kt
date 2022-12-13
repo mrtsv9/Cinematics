@@ -15,4 +15,5 @@ data class MovieDetailEntity(
     val overview: String,
     val poster_path: String,
     val userRating: Int? = 0,
+    var userToken: String
 )

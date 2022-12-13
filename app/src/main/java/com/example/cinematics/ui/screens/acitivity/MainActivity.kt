@@ -14,11 +14,6 @@ class MainActivity : ComponentActivity() {
     private val splashViewModel: MainActivityViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        installSplashScreen().apply {
-            setKeepOnScreenCondition {
-                splashViewModel.isLoading.value
-            }
-        }
         setContent {
             JetMVVMMovieTheme {
                 MainScreen()

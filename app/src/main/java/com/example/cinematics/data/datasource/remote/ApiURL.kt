@@ -3,7 +3,8 @@ package com.example.cinematics.data.datasource.remote
 object ApiURL {
     private const val API_KEY = "4ea6387de79de0841e0f6c273eae5f9d"
     const val BASE_URL = "https://api.themoviedb.org/3/"
-    const val IMAGE_URL = "https://image.tmdb.org/t/p/w342"
+    const val AUTH_URL = "https://junior.balinasoft.com/"
+    const val IMAGE_URL = "https://image.tmdb.org/t/p/w342/"
     const val MOVIE_LIST = "movie/now_playing?api_key=$API_KEY&language=en-US"
     const val POPULAR_MOVIE_LIST = "movie/popular?api_key=$API_KEY&language=en-US"
     const val TOP_RATED_MOVIE_LIST = "movie/top_rated?api_key=$API_KEY&language=en-US"

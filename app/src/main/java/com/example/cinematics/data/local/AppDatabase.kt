@@ -3,11 +3,14 @@ package com.example.cinematics.data.local
 import android.content.Context
 import androidx.room.*
 import com.example.cinematics.data.local.dao.MovieDetailDao
+import com.example.cinematics.data.local.dao.UserDao
 import com.example.cinematics.data.local.entities.MovieDetailEntity
+import com.example.cinematics.data.local.entities.UserEntity
 
 @Database(
     entities = [
-        MovieDetailEntity::class
+        MovieDetailEntity::class,
+        UserEntity::class
     ],
     exportSchema = false,
     version = 3
@@ -15,6 +18,7 @@ import com.example.cinematics.data.local.entities.MovieDetailEntity
 abstract class AppDatabase : RoomDatabase() {
 
     abstract val movieDetailDao: MovieDetailDao
+    abstract val userDao: UserDao
 
     companion object {
         @Volatile

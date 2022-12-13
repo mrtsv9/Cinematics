@@ -1,9 +1,9 @@
 package com.example.cinematics.di
 
 import android.content.Context
-import androidx.room.Insert
 import com.example.cinematics.data.local.AppDatabase
 import com.example.cinematics.data.local.dao.MovieDetailDao
+import com.example.cinematics.data.local.dao.UserDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,6 +22,10 @@ object RoomModule {
 
     @Provides
     @Singleton
-    fun provideUserDao(appDatabase: AppDatabase): MovieDetailDao = appDatabase.movieDetailDao
+    fun provideMovieDao(appDatabase: AppDatabase): MovieDetailDao = appDatabase.movieDetailDao
+
+    @Singleton
+    @Provides
+    fun provideUserDao(appDatabase: AppDatabase): UserDao = appDatabase.userDao
 
 }

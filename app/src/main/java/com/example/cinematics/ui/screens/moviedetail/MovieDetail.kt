@@ -181,7 +181,6 @@ fun MovieDetail(navController: NavController, movieId: Int) {
                                 }
                             }
 
-
                         }
                         recommendedMovie.value?.let {
                             if (it is DataState.Success<BaseModel>) {
