@@ -1,5 +1,6 @@
 package com.example.cinematics.ui.screens.moviedetail
 
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,7 +18,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -55,7 +55,8 @@ fun MovieDetail(navController: NavController, movieId: Int) {
 
     val openRatingDialog = remember { mutableStateOf(false) }
 
-    val userRatingNumber = remember { mutableStateOf(0) }
+    val updatedUserRating = remember { mutableStateOf(0) }
+    val userRating by viewModel.userRating.collectAsState()
 
     if (isItemInDatabase) {
         colorAdd = LightGrey
@@ -78,12 +79,12 @@ fun MovieDetail(navController: NavController, movieId: Int) {
         movieDetail.value?.let { it ->
             if (it is DataState.Success<MovieDetail>) {
                 viewModel.isPresentByTitle(it.data.title)
+                viewModel.getUserRating(it.data.title)
                 Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
                     Image(painter = rememberAsyncImagePainter(ApiURL.IMAGE_URL.plus(it.data.backdrop_path)),
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
-//                            .fillMaxSize()
                             .height(250.dp)
                             .padding(start = 5.dp, end = 5.dp)
                             .clip(MaterialTheme.shapes.large))
@@ -164,18 +165,23 @@ fun MovieDetail(navController: NavController, movieId: Int) {
                             Spacer(modifier = Modifier.width(32.dp))
                             Text(text = "Your rating:", fontSize = 20.sp, color = Color.Black)
                             Spacer(modifier = Modifier.width(8.dp))
-                            if (userRatingNumber.value != 0) {
-                                LazyRow {
-                                    items(userRatingNumber.value) {
-                                        Image(painter = painterResource(id = R.drawable.ic_star_24),
-                                            modifier = Modifier
-                                                .height(32.dp)
-                                                .width(32.dp),
-                                            contentDescription = "")
-                                        Spacer(modifier = Modifier.width(6.dp))
-                                    }
+                            var starsNumber = 0
+                            if (userRating != null)
+                            starsNumber = userRating!!.toInt()
+                            if (updatedUserRating.value != 0)
+                                starsNumber = updatedUserRating.value
+                            LazyRow {
+                                items(starsNumber) {
+                                    Image(painter = painterResource(id = R.drawable.ic_star_24),
+                                        modifier = Modifier
+                                            .height(32.dp)
+                                            .width(32.dp),
+                                        contentDescription = "")
+                                    Spacer(modifier = Modifier.width(6.dp))
                                 }
                             }
+
+
                         }
                         recommendedMovie.value?.let {
                             if (it is DataState.Success<BaseModel>) {
@@ -190,6 +196,56 @@ fun MovieDetail(navController: NavController, movieId: Int) {
                     }
 
                 }
+                if (openRatingDialog.value) {
+                    AlertDialog(onDismissRequest = {
+                        openRatingDialog.value = false
+                    },
+                        modifier = Modifier
+                            .wrapContentHeight()
+                            .fillMaxWidth(0.9f)
+                            .clip(RoundedCornerShape(32.dp))
+                            .background(PurpleGrey40),
+                        confirmButton = {
+                            Button(onClick = { openRatingDialog.value = false },
+                                Modifier.padding(end = 56.dp)) {
+                                Text(text = "Close", fontSize = 18.sp)
+                            }
+                        },
+                        text = {
+                            val ratingItems = listOf(1, 2, 3, 4, 5)
+                            LazyColumn {
+                                items(ratingItems.size) { i ->
+                                    val starsNumber = i.inc()
+                                    Column(verticalArrangement = Arrangement.SpaceBetween,
+                                        horizontalAlignment = Alignment.CenterHorizontally) {
+                                        Row(modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(48.dp)
+                                            .clip(RoundedCornerShape(12.dp))
+                                            .background(LightGrey)
+                                            .clickable {
+                                                viewModel.saveMovie(it.data)
+                                                updatedUserRating.value = starsNumber
+                                                viewModel.updateUserRating(updatedUserRating.value,
+                                                    it.data.title)
+                                                openRatingDialog.value = false
+                                            },
+                                            horizontalArrangement = Arrangement.Center,
+                                            verticalAlignment = Alignment.CenterVertically) {
+                                            repeat(starsNumber) {
+                                                Image(painter = painterResource(id = R.drawable.ic_star_24),
+                                                    modifier = Modifier
+                                                        .height(32.dp)
+                                                        .width(32.dp),
+                                                    contentDescription = "")
+                                            }
+                                        }
+                                        Spacer(modifier = Modifier.height(8.dp))
+                                    }
+                                }
+                            }
+                        })
+                }
             }
         }
         recommendedMovie.pagingLoadingState {
@@ -198,53 +254,6 @@ fun MovieDetail(navController: NavController, movieId: Int) {
         movieDetail.pagingLoadingState {
             progressBar.value = it
         }
-    }
-
-    if (openRatingDialog.value) {
-        AlertDialog(onDismissRequest = {
-            openRatingDialog.value = false
-        },
-            modifier = Modifier
-                .wrapContentHeight()
-                .fillMaxWidth(0.9f)
-                .clip(RoundedCornerShape(32.dp))
-                .background(PurpleGrey40),
-            confirmButton = {
-                Button(onClick = { openRatingDialog.value = false }, Modifier.padding(end = 56.dp)) {
-                    Text(text = "Close", fontSize = 18.sp)
-                }
-            },
-            text = {
-                val ratingItems = listOf(1, 2, 3, 4, 5)
-                LazyColumn {
-                    items(ratingItems.size) { i ->
-                        val starsNumber = i.inc()
-                        Column(verticalArrangement = Arrangement.SpaceBetween,
-                            horizontalAlignment = Alignment.CenterHorizontally) {
-                            Row(modifier = Modifier
-                                .fillMaxWidth()
-                                .height(48.dp)
-                                .clip(RoundedCornerShape(12.dp))
-                                .background(LightGrey)
-                                .clickable {
-                                    userRatingNumber.value = starsNumber
-                                    openRatingDialog.value = false
-                                },
-                                horizontalArrangement = Arrangement.Center,
-                                verticalAlignment = Alignment.CenterVertically) {
-                                repeat(starsNumber) {
-                                    Image(painter = painterResource(id = R.drawable.ic_star_24),
-                                        modifier = Modifier
-                                            .height(32.dp)
-                                            .width(32.dp),
-                                        contentDescription = "")
-                                }
-                            }
-                            Spacer(modifier = Modifier.height(8.dp))
-                        }
-                    }
-                }
-            })
     }
 
 }

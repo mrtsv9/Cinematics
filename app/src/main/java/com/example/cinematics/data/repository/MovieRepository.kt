@@ -26,6 +26,10 @@ class MovieRepository @Inject constructor(
         dao.save(movie.toMovieDetailEntity())
     }
 
+    suspend fun updateUserRating(userRating: Int, title: String) {
+        dao.updateUserRating(userRating, title)
+    }
+
     suspend fun isPresentByTitle(title: String): Boolean {
         val result = dao.isPresentByTitle(title)
         return result != null
@@ -43,6 +47,9 @@ class MovieRepository @Inject constructor(
         dao.deleteItem(item.title)
     }
 
+    suspend fun getUserRating(title: String): Int? {
+        return dao.getUserRating(title)
+    }
 
     suspend fun movieList(page: Int): Flow<DataState<BaseModel>> = flow {
         emit(DataState.Loading)

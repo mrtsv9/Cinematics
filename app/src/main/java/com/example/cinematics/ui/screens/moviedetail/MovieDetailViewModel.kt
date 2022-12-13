@@ -27,10 +27,23 @@ class MovieDetailViewModel @Inject constructor(private val repository: MovieRepo
 
     var moviesState = MutableStateFlow<List<MovieDetailEntity>>(emptyList())
     var isMovieDetailInDatabase = MutableStateFlow<Boolean>(false)
+    var userRating = MutableStateFlow<Int?>(0)
 
     fun saveMovie(movieDetail: MovieDetail) {
         viewModelScope.launch {
             repository.insertMovie(movieDetail)
+        }
+    }
+
+    fun getUserRating(title: String) {
+        viewModelScope.launch {
+            userRating.value = repository.getUserRating(title)
+        }
+    }
+
+    fun updateUserRating(userRating: Int, title: String) {
+        viewModelScope.launch {
+            repository.updateUserRating(userRating, title)
         }
     }
 
