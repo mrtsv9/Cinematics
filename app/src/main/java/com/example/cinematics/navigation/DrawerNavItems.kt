@@ -11,8 +11,8 @@ val DrawerNavItems = listOf(
         route = DrawerItem.Profile.route
     ),
     NavItem(
-        label = DrawerItem.Preferences.title,
+        label = DrawerItem.WatchList.title,
         icon = Icons.Filled.Assistant,
-        route = DrawerItem.Preferences.route
+        route = DrawerItem.WatchList.route
     )
 )

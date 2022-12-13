@@ -1,4 +1,4 @@
-package com.example.cinematics.ui.screens.drawer.draweritems.preferences
+package com.example.cinematics.ui.screens.drawer.draweritems.watchlist
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,7 +11,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavController
 
 @Composable
-fun Preferences(
+fun Watchlist(
     navController: NavController
 ) {
     Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {

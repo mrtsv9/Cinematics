@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -25,6 +26,9 @@ import androidx.navigation.NavController
 import com.example.cinematics.data.model.Genres
 import com.example.cinematics.data.model.moviedetail.Genre
 import com.example.cinematics.navigation.NavigationScreen
+import com.example.cinematics.ui.theme.ColorLightPrimary
+import com.example.cinematics.ui.theme.ColorPrimary
+import com.example.cinematics.ui.theme.LightBlack
 import com.example.cinematics.utils.network.DataState
 
 @Composable
@@ -82,7 +86,7 @@ fun LazyCall(
             .padding(7.5.dp)
             .aspectRatio(1f)
             .clip(MaterialTheme.shapes.large)
-            .background(MaterialTheme.colorScheme.inversePrimary)
+            .background(Color.Gray)
             .clickable { onItemClick(item) }
     ) {
         val width = constraints.maxWidth
@@ -123,8 +127,8 @@ fun LazyCall(
             lineTo(-100f, height.toFloat() + 100f)
             close()
         }
-        val primaryContainer = MaterialTheme.colorScheme.inversePrimary
-        val surfaceVariant = MaterialTheme.colorScheme.primaryContainer
+        val primaryContainer = ColorPrimary
+        val surfaceVariant = ColorLightPrimary
 
         Canvas(
             modifier = Modifier

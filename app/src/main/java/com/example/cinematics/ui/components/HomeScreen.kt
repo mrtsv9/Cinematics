@@ -71,7 +71,10 @@ fun HomeScreen(
                         .height(180.dp)
                         .fillMaxWidth()
                         .background(White)
-                        .padding(horizontal = 12.dp),
+                        .padding(horizontal = 12.dp)
+                        .clickable {
+                            navController.navigate(NavigationScreen.MovieDetail.MOVIE_DETAIL.plus("/${item?.id}"))
+                        },
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Start) {
 

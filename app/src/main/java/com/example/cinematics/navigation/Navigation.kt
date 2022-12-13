@@ -18,11 +18,9 @@ import com.example.cinematics.ui.screens.bottombar.toprated.TopRated
 import com.example.cinematics.ui.screens.bottombar.upcoming.Upcoming
 import com.example.cinematics.ui.screens.bottombar.genre.GenreScreen
 import com.example.cinematics.ui.screens.bottombar.genre.GenreTestingScreen
-import com.example.cinematics.ui.screens.drawer.draweritems.help.Help
-import com.example.cinematics.ui.screens.drawer.draweritems.preferences.Preferences
+import com.example.cinematics.ui.screens.drawer.draweritems.watchlist.Watchlist
 import com.example.cinematics.ui.screens.moviedetail.MovieDetail
 import com.example.cinematics.ui.screens.drawer.draweritems.profile.ProfileScreen
-import com.example.cinematics.ui.screens.drawer.draweritems.settings.Settings
 
 
 @Composable
@@ -67,21 +65,21 @@ fun Navigation(
                 navController = navController
             )
         }
-        composable(DrawerItem.Help.route){
-            Help(
+//        composable(DrawerItem.Help.route){
+//            Help(
+//                navController = navController
+//            )
+//        }
+        composable(DrawerItem.WatchList.route){
+            Watchlist(
                 navController = navController
             )
         }
-        composable(DrawerItem.Preferences.route){
-            Preferences(
-                navController = navController
-            )
-        }
-        composable(DrawerItem.Settings.route){
-            Settings(
-                navController = navController
-            )
-        }
+//        composable(DrawerItem.Settings.route){
+//            Settings(
+//                navController = navController
+//            )
+//        }
         composable(
             NavigationScreen.NAVIGATION_GENRE_WITH_GENRE_ID,
             arguments = listOf(navArgument(NavigationScreen.GENRE_ID) {
@@ -140,9 +138,9 @@ fun Navigation(
 fun navigationTitle(navController: NavController): String {
     return when (currentRoute(navController)) {
         DrawerItem.Profile.route -> "Profile"
-        DrawerItem.Settings.route -> "Settings"
-        DrawerItem.Preferences.route -> "Preferences"
-        DrawerItem.Help.route -> "Help"
+//        DrawerItem.Settings.route -> "Settings"
+        DrawerItem.WatchList.route -> "Watchlist"
+//        DrawerItem.Help.route -> "Help"
         NavigationScreen.MovieDetail.MOVIE_DETAIL -> stringResource(id = R.string.movie_detail)
         NavigationScreen.ArtistDetail.ARTIST_DETAIL -> stringResource(id = R.string.artist_detail)
         NavigationScreen.LOGIN -> stringResource(id = R.string.login)

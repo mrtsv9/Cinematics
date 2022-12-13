@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.JetMVVMMovie" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.Cinematics" parent="android:Theme.Material.Light.NoActionBar" />
 
     <style name="Theme.MySplash" parent="Theme.SplashScreen">
         <!-- Set the splash screen background, animated icon, and animation duration. -->
@@ -11,19 +11,19 @@
              animated drawable. One of these is required. -->
         <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
         <!-- Required for animated icons -->
-        <item name="windowSplashScreenAnimationDuration">1000</item>
+        <item name="windowSplashScreenAnimationDuration">100</item>
         <item name="android:statusBarColor">@color/white</item>
         <item name="android:windowTranslucentStatus">true</item>
 
         <!-- Set the theme of the Activity that directly follows your splash screen. -->
         <!-- Required -->
-        <item name="postSplashScreenTheme">@style/Theme.JetMVVMMovie</item>
+        <item name="postSplashScreenTheme">@style/Theme.Cinematics</item>
     </style>
 
     <style name="Theme.splashScreenTheme" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">#6B6EF6</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_camera</item>
-        <item name="postSplashScreenTheme">@style/Theme.JetMVVMMovie</item>
+        <item name="postSplashScreenTheme">@style/Theme.Cinematics</item>
     </style>
 
 </resources>
