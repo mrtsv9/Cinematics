@@ -1,6 +1,7 @@
 package com.example.cinematics.di
 
 import com.example.cinematics.data.datasource.remote.ApiService
+import com.example.cinematics.data.local.dao.MovieDetailDao
 import com.example.cinematics.data.repository.MovieRepository
 import dagger.Module
 import dagger.Provides
@@ -11,17 +12,14 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object RepositoryModule {
-    /**
-     * Provides RemoteDataRepository for access api service method
-     */
+
     @Provides
     @Singleton
     fun provideMovieRepository(
         apiService: ApiService,
+        dao: MovieDetailDao,
     ): MovieRepository {
-        return MovieRepository(
-            apiService
-        )
+        return MovieRepository(apiService, dao)
     }
 
 }

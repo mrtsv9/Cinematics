@@ -38,10 +38,10 @@ fun ArtistDetail(personId: Int) {
         CircularIndeterminateProgressBar(isDisplayed = progressBar.value, 0.4f)
 
         artistDetail.value.let {
-            if (it is DataState.Success<ArtistDetail>) {
+            if (it is DataState.Success<ArtistDetail?>) {
                 Row {
                     Image(
-                        painter = rememberAsyncImagePainter(ApiURL.IMAGE_URL.plus(it.data.profilePath)),
+                        painter = rememberAsyncImagePainter(ApiURL.IMAGE_URL.plus(it.data?.profilePath)),
                         contentDescription = null,
                         contentScale = ContentScale.FillBounds,
                         modifier = Modifier
@@ -52,25 +52,25 @@ fun ArtistDetail(personId: Int) {
                     Column {
                         Text(
                             modifier = Modifier.padding(start = 8.dp),
-                            text = it.data.name,
+                            text = it.data?.name.toString(),
                             fontSize = 26.sp,
                             fontWeight = FontWeight.Medium
                         )
                         PersonalInfo(
                             stringResource(com.example.cinematics.R.string.know_for),
-                            it.data.knownForDepartment
+                            it.data?.knownForDepartment.toString()
                         )
                         PersonalInfo(
                             stringResource(com.example.cinematics.R.string.gender),
-                            it.data.gender.genderInString()
+                            it.data?.gender?.genderInString().toString()
                         )
                         PersonalInfo(
                             stringResource(com.example.cinematics.R.string.birth_day),
-                            it.data.birthday
+                            it.data?.birthday.toString()
                         )
                         PersonalInfo(
                             stringResource(com.example.cinematics.R.string.place_of_birth),
-                            it.data.placeOfBirth
+                            it.data?.placeOfBirth.toString()
                         )
                     }
                 }
@@ -81,7 +81,7 @@ fun ArtistDetail(personId: Int) {
                     fontWeight = FontWeight.Medium
                 )
                 Text(
-                    text = it.data.biography
+                    text = it.data?.biography.toString()
                 )
             }
         }

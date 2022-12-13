@@ -1,5 +1,7 @@
 package com.example.cinematics.data.model.moviedetail
 
+import com.example.cinematics.data.local.entities.MovieDetailEntity
+
 data class MovieDetail(
     val adult: Boolean,
     val backdrop_path: String,
@@ -25,5 +27,17 @@ data class MovieDetail(
     val title: String,
     val video: Boolean,
     val vote_average: Double,
-    val vote_count: Int
+    val vote_count: Int,
 )
+
+fun MovieDetail.toMovieDetailEntity(): MovieDetailEntity {
+    return MovieDetailEntity(id,
+        original_language,
+        title,
+        backdrop_path,
+        release_date,
+        video,
+        vote_average,
+        overview,
+        poster_path)
+}

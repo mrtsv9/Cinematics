@@ -4,19 +4,45 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import com.example.cinematics.data.datasource.remote.paging.*
 import com.example.cinematics.data.datasource.remote.ApiService
+import com.example.cinematics.data.local.dao.MovieDetailDao
+import com.example.cinematics.data.local.entities.MovieDetailEntity
 import com.example.cinematics.data.model.BaseModel
 import com.example.cinematics.data.model.Genres
 import com.example.cinematics.data.model.artist.Artist
 import com.example.cinematics.data.model.artist.ArtistDetail
 import com.example.cinematics.data.model.moviedetail.MovieDetail
+import com.example.cinematics.data.model.moviedetail.toMovieDetailEntity
 import com.example.cinematics.utils.network.DataState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class MovieRepository @Inject constructor(
-    private val apiService: ApiService
+    private val apiService: ApiService,
+    private val dao: MovieDetailDao,
 ) {
+
+    suspend fun insertMovie(movie: MovieDetail) {
+        dao.save(movie.toMovieDetailEntity())
+    }
+
+    suspend fun isPresentByTitle(title: String): Boolean {
+        val result = dao.isPresentByTitle(title)
+        return result != null
+    }
+
+    suspend fun getAllSavedMovies(): List<MovieDetailEntity> {
+        return dao.getAll()
+    }
+
+    suspend fun deleteItemFromDatabase(item: MovieDetail) {
+        dao.deleteItem(item.title)
+    }
+
+    suspend fun deleteItemFromDatabase(item: MovieDetailEntity) {
+        dao.deleteItem(item.title)
+    }
+
 
     suspend fun movieList(page: Int): Flow<DataState<BaseModel>> = flow {
         emit(DataState.Loading)
@@ -131,5 +157,4 @@ class MovieRepository @Inject constructor(
         pagingSourceFactory = { GenrePagingDataSource(apiService, genreId) },
         config = PagingConfig(pageSize = 1)
     ).flow
-
 }

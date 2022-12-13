@@ -7,8 +7,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -31,16 +29,12 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
 import com.example.cinematics.data.datasource.remote.ApiURL
 import com.example.cinematics.data.model.MovieItem
 import com.example.cinematics.navigation.NavigationScreen
 import com.example.cinematics.navigation.currentRoute
 import com.example.cinematics.utils.PagingLoadingState
-import com.example.cinematics.utils.items
 import com.example.cinematics.R
-import com.example.cinematics.ui.theme.DividerColor
-import com.example.cinematics.ui.theme.LightBlack
 import com.example.cinematics.ui.theme.White
 import kotlinx.coroutines.flow.Flow
 
@@ -93,7 +87,7 @@ fun HomeScreen(
                             Text(text = item?.releaseDate.toString(), fontSize = 20.sp)
                             Row(modifier = Modifier.wrapContentSize(),
                                 verticalAlignment = Alignment.CenterVertically) {
-                                Image(painterResource(id = R.drawable.ic_star_16),
+                                Image(painterResource(id = R.drawable.ic_star_24),
                                     contentDescription = null,
                                     modifier = Modifier.wrapContentSize())
                                 Spacer(modifier = Modifier.width(4.dp))

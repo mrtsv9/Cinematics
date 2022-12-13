@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -12,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -31,40 +33,49 @@ import com.example.cinematics.data.model.artist.Cast
 import com.example.cinematics.data.model.moviedetail.MovieDetail
 import com.example.cinematics.navigation.NavigationScreen
 import com.example.cinematics.ui.components.CircularIndeterminateProgressBar
-import com.example.cinematics.ui.theme.ColorOrange
-import com.example.cinematics.ui.theme.LightGrey
+import com.example.cinematics.ui.theme.*
 import com.example.cinematics.utils.network.DataState
 import com.example.cinematics.utils.pagingLoadingState
 
 @Composable
 fun MovieDetail(navController: NavController, movieId: Int) {
-    val movieDetailViewModel = hiltViewModel<MovieDetailViewModel>()
+    val viewModel = hiltViewModel<MovieDetailViewModel>()
     val progressBar = remember {
         mutableStateOf(false)
     }
-    val movieDetail = movieDetailViewModel.movieDetail
-    val recommendedMovie = movieDetailViewModel.recommendedMovie
-    val artist = movieDetailViewModel.artist
+    val movieDetail = viewModel.movieDetail
+    val recommendedMovie = viewModel.recommendedMovie
+    val artist = viewModel.artist
 
-    val colorAdd = remember { mutableStateOf(ColorOrange) }
-    val imageAdd = remember { mutableStateOf(R.drawable.ic_add_24) }
-    val textAdd = remember { mutableStateOf("Add to Watchlist") }
+    val isItemInDatabase by viewModel.isMovieDetailInDatabase.collectAsState()
 
+    var colorAdd by remember { mutableStateOf(ColorOrange) }
+    var imageAdd by remember { mutableStateOf(R.drawable.ic_add_24) }
+    var textAdd by remember { mutableStateOf("Add to Watchlist") }
+
+    val openRatingDialog = remember { mutableStateOf(false) }
+
+    if (isItemInDatabase) {
+        colorAdd = LightGrey
+        imageAdd = R.drawable.ic_check_24
+        textAdd = "Already in Watchlist"
+    }
 
 //    val interactorSource = remember { MutableInteractionSource() }
 //    val isAddedToWatchList by interactorSource.collectIsPressedAsState()
 //    val color = if (isAddedToWatchList) LightGrey else ColorOrange
 
     LaunchedEffect(key1 = true) {
-        movieDetailViewModel.movieDetailApi(movieId)
-        movieDetailViewModel.recommendedMovieApi(movieId, page = 1)
-        movieDetailViewModel.movieCredit(movieId)
+        viewModel.movieDetailApi(movieId)
+        viewModel.recommendedMovieApi(movieId, page = 1)
+        viewModel.movieCredit(movieId)
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
         CircularIndeterminateProgressBar(isDisplayed = progressBar.value, verticalBias = 0.4f)
         movieDetail.value?.let { it ->
             if (it is DataState.Success<MovieDetail>) {
+                viewModel.isPresentByTitle(it.data.title)
                 Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
                     Image(painter = rememberAsyncImagePainter(ApiURL.IMAGE_URL.plus(it.data.backdrop_path)),
                         contentDescription = null,
@@ -119,19 +130,37 @@ fun MovieDetail(navController: NavController, movieId: Int) {
                             .fillMaxWidth()
                             .height(44.dp)
                             .clip(RoundedCornerShape(8.dp))
-                            .background(colorAdd.value)
+                            .background(colorAdd)
                             .clickable {
-                                colorAdd.value = LightGrey
-                                imageAdd.value = R.drawable.ic_check_24
-                                textAdd.value = "Added to Watchlist!"
+                                if (!isItemInDatabase) {
+                                    colorAdd = LightGrey
+                                    imageAdd = R.drawable.ic_check_24
+                                    textAdd = "Already in watchlist"
+                                    viewModel.saveMovie(it.data)
+                                }
                             },
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.Start) {
-                            Image(painter = painterResource(imageAdd.value),
+                            Image(painter = painterResource(imageAdd),
                                 contentDescription = "Icon add",
                                 Modifier.padding(start = 8.dp))
                             Spacer(modifier = Modifier.width(8.dp))
-                            Text(text = textAdd.value, fontSize = 20.sp, color = Color.Black)
+                            Text(text = textAdd, fontSize = 20.sp, color = Color.Black)
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Row(modifier = Modifier
+                            .fillMaxWidth()
+                            .height(44.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(LightGrey)
+                            .clickable {
+                                openRatingDialog.value = true
+                            },
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start) {
+
+                            Spacer(modifier = Modifier.width(32.dp))
+                            Text(text = "Your rating:", fontSize = 20.sp, color = Color.Black)
                         }
                         recommendedMovie.value?.let {
                             if (it is DataState.Success<BaseModel>) {
@@ -154,6 +183,77 @@ fun MovieDetail(navController: NavController, movieId: Int) {
         movieDetail.pagingLoadingState {
             progressBar.value = it
         }
+    }
+
+    if (openRatingDialog.value) {
+        AlertDialog(onDismissRequest = {
+            openRatingDialog.value = false
+        },
+            modifier = Modifier
+                .wrapContentHeight()
+                .fillMaxWidth(0.8f)
+                .clip(RoundedCornerShape(32.dp))
+                .background(PurpleGrey40),
+            confirmButton = {},
+            text = {
+                Column(verticalArrangement = Arrangement.SpaceBetween,
+                    horizontalAlignment = Alignment.CenterHorizontally) {
+                    Row(modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(LightGrey), horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically) {
+                        Image(painter = painterResource(id = R.drawable.ic_star_24),
+                            modifier = Modifier
+                                .height(32.dp)
+                                .width(32.dp),
+                            contentDescription = "")
+                    }
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Row(modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(LightGrey), horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically) {
+                        Image(painter = painterResource(id = R.drawable.ic_star_24),
+                            modifier = Modifier
+                                .height(32.dp)
+                                .width(32.dp),
+                            contentDescription = "")
+                        Image(painter = painterResource(id = R.drawable.ic_star_24),
+                            modifier = Modifier
+                                .height(32.dp)
+                                .width(32.dp),
+
+                            contentDescription = "")
+                    }
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Row(modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(LightGrey), horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically) {
+                        Image(painter = painterResource(id = R.drawable.ic_star_24),
+                            modifier = Modifier
+                                .height(32.dp)
+                                .width(32.dp),
+                            contentDescription = "")
+                        Image(painter = painterResource(id = R.drawable.ic_star_24),
+                            modifier = Modifier
+                                .height(32.dp)
+                                .width(32.dp),
+                            contentDescription = "")
+                        Image(painter = painterResource(id = R.drawable.ic_star_24),
+                            modifier = Modifier
+                                .height(32.dp)
+                                .width(32.dp),
+                            contentDescription = "")
+                    }
+                }
+            })
     }
 }
 
