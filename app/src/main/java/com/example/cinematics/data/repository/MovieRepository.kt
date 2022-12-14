@@ -5,6 +5,7 @@ import androidx.paging.PagingConfig
 import com.example.cinematics.data.datasource.remote.paging.*
 import com.example.cinematics.data.datasource.remote.ApiService
 import com.example.cinematics.data.local.dao.MovieDetailDao
+import com.example.cinematics.data.local.dao.TokenDao
 import com.example.cinematics.data.local.dao.UserDao
 import com.example.cinematics.data.local.entities.MovieDetailEntity
 import com.example.cinematics.data.model.BaseModel
@@ -22,43 +23,44 @@ class MovieRepository @Inject constructor(
     private val apiService: ApiService,
     private val dao: MovieDetailDao,
     private val userDao: UserDao,
+    private val tokenDao: TokenDao
 ) {
 
     suspend fun insertMovie(movie: MovieDetail) {
-        val token = userDao.getUser()!!.token!!
+        val token = tokenDao.getToken()?.token!!
         val movieDetail = movie.toMovieDetailEntity()
         movieDetail.userToken = token
         dao.save(movieDetail)
     }
 
     suspend fun updateUserRating(userRating: Int, title: String) {
-        val token = userDao.getUser()!!.token!!
+        val token = tokenDao.getToken()?.token!!
         dao.updateUserRating(userRating, title, token)
     }
 
     suspend fun isPresentByTitle(title: String): Boolean {
-        val token = userDao.getUser()!!.token!!
+        val token = tokenDao.getToken()?.token!!
         val result = dao.isPresentByTitle(title, token)
         return result != null
     }
 
     suspend fun getAllSavedMovies(): List<MovieDetailEntity> {
-        val token = userDao.getUser()!!.token!!
+        val token = tokenDao.getToken()?.token!!
         return dao.getAll(token)
     }
 
     suspend fun deleteItemFromDatabase(item: MovieDetail) {
-        val token = userDao.getUser()!!.token!!
+        val token = tokenDao.getToken()?.token!!
         dao.deleteItem(item.title, token)
     }
 
     suspend fun deleteItemFromDatabase(item: MovieDetailEntity) {
-        val token = userDao.getUser()!!.token!!
+        val token = tokenDao.getToken()?.token!!
         dao.deleteItem(item.title, token)
     }
 
     suspend fun getUserRating(title: String): Int? {
-        val token = userDao.getUser()!!.token!!
+        val token = tokenDao.getToken()?.token!!
         return dao.getUserRating(title, token)
     }
 

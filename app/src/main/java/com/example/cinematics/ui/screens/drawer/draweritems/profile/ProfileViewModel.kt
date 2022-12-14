@@ -2,6 +2,7 @@ package com.example.cinematics.ui.screens.drawer.draweritems.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.cinematics.data.local.dao.TokenDao
 import com.example.cinematics.data.local.dao.UserDao
 import com.example.cinematics.data.local.entities.toUserAuthItem
 import com.example.cinematics.domain.model.auth.UserAuthItem
@@ -11,19 +12,22 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ProfileViewModel @Inject constructor(private val dao: UserDao) : ViewModel() {
+class ProfileViewModel @Inject constructor(
+    private val dao: UserDao,
+    private val tokenDao: TokenDao,
+) : ViewModel() {
 
-    val user = MutableStateFlow<UserAuthItem>(UserAuthItem(0, "", ""))
+    val user = MutableStateFlow<UserAuthItem?>(UserAuthItem(0, "", ""))
 
     fun getUserData() {
         viewModelScope.launch {
-            user.value = dao.getUser()?.toUserAuthItem()!!
+            user.value = dao.getUser(tokenDao.getToken()?.token!!)?.toUserAuthItem()
         }
     }
 
     fun logoutUser() {
         viewModelScope.launch {
-            dao.logoutUser()
+            tokenDao.deleteToken()
         }
     }
 

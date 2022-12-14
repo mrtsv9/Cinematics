@@ -2,6 +2,7 @@ package com.example.cinematics.di
 
 import com.example.cinematics.data.datasource.remote.ApiService
 import com.example.cinematics.data.local.dao.MovieDetailDao
+import com.example.cinematics.data.local.dao.TokenDao
 import com.example.cinematics.data.local.dao.UserDao
 import com.example.cinematics.data.repository.MovieRepository
 import com.example.cinematics.data.repository.auth.LoginRepositoryImpl
@@ -23,9 +24,10 @@ object RepositoryModule {
     fun provideMovieRepository(
         apiService: ApiService,
         dao: MovieDetailDao,
-        userDao: UserDao
+        userDao: UserDao,
+        tokenDao: TokenDao
     ): MovieRepository {
-        return MovieRepository(apiService, dao, userDao)
+        return MovieRepository(apiService, dao, userDao, tokenDao)
     }
 
     @Provides

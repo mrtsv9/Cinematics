@@ -46,10 +46,10 @@ fun ProfileScreen(navController: NavController) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(text = "Login: ", fontSize = 24.sp, color = Color.Black, textAlign = TextAlign.Center)
             Spacer(modifier = Modifier.width(8.dp))
-            Text(text = "${user.value.login}", fontSize = 24.sp, color = Color.Black, textAlign = TextAlign.Center)
+            Text(text = "${user.value?.login}", fontSize = 24.sp, color = Color.Black, textAlign = TextAlign.Center)
         }
         Button(modifier = Modifier.padding(10.dp), onClick = {
-//            viewModel.logoutUser()
+            viewModel.logoutUser()
             val intent = Intent(context, SplashActivity::class.java)
             context.startActivity(intent)
         }) {

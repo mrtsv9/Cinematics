@@ -3,6 +3,7 @@ package com.example.cinematics.di
 import android.content.Context
 import com.example.cinematics.data.local.AppDatabase
 import com.example.cinematics.data.local.dao.MovieDetailDao
+import com.example.cinematics.data.local.dao.TokenDao
 import com.example.cinematics.data.local.dao.UserDao
 import dagger.Module
 import dagger.Provides
@@ -27,5 +28,9 @@ object RoomModule {
     @Singleton
     @Provides
     fun provideUserDao(appDatabase: AppDatabase): UserDao = appDatabase.userDao
+
+    @Singleton
+    @Provides
+    fun provideTokenDao(appDatabase: AppDatabase): TokenDao = appDatabase.tokenDao
 
 }

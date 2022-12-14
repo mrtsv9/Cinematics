@@ -10,7 +10,6 @@ data class UserEntity(
     val id: Int,
     val login: String?,
     val token: String?,
-    val isLogIn: Int? = null
 )
 
 fun UserEntity.toUserAuthItem(): UserAuthItem {

@@ -12,10 +12,7 @@ interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUser(userEntity: UserEntity)
 
-    @Query("SELECT * from user where token = :token")
+    @Query("SELECT * from user where login = :token")
     suspend fun getUser(token: String): UserEntity?
-
-    @Query("delete from user where id = 1")
-    suspend fun logoutUser()
 
 }
